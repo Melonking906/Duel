@@ -12,7 +12,6 @@ import java.util.LinkedList;
 
 public class RegionUtils
 {
-
     public static boolean canDuelHere( Location location )
     {
         return canDuelHere( location.getWorld() ) && ( Duel.p.isWorldGuardEnabled() && canDuelHere( getRegion( location ) ) );

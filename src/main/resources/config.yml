@@ -71,6 +71,7 @@ Challenge:
       - Stone_Axe
       - Wood_Sword
       - Wood_Axe
+      - Air
 
 WorldGuard:
     # Use the region list as a whitelist?

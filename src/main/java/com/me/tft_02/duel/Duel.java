@@ -52,7 +52,7 @@ public class Duel extends JavaPlugin
         Config.getInstance();
         HiddenConfig.getInstance();
 
-        if( !noErrorsInConfigFiles )
+        if( ! noErrorsInConfigFiles )
         {
             return;
         }
