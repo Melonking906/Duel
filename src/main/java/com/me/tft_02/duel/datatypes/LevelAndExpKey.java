@@ -1,27 +1,33 @@
 package com.me.tft_02.duel.datatypes;
 
-public class LevelAndExpKey {
+public class LevelAndExpKey
+{
     private int level;
     private float exp;
 
-    public LevelAndExpKey(int level, float exp) {
-        this.setLevel(level);
-        this.setExp(exp);
+    public LevelAndExpKey( int level, float exp )
+    {
+        this.setLevel( level );
+        this.setExp( exp );
     }
 
-    public int getLevel() {
+    public int getLevel()
+    {
         return level;
     }
 
-    public float getExp() {
+    public float getExp()
+    {
         return exp;
     }
 
-    public void setLevel(int level) {
+    public void setLevel( int level )
+    {
         this.level = level;
     }
 
-    public void setExp(float exp) {
+    public void setExp( float exp )
+    {
         this.exp = exp;
     }
 }

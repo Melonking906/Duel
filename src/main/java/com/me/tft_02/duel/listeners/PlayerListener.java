@@ -1,23 +1,5 @@
 package com.me.tft_02.duel.listeners;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.Location;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.inventory.ItemStack;
-
 import com.me.tft_02.duel.Duel;
 import com.me.tft_02.duel.config.Config;
 import com.me.tft_02.duel.datatypes.InteractType;
@@ -30,8 +12,21 @@ import com.me.tft_02.duel.util.Permissions;
 import com.me.tft_02.duel.util.player.ArenaManager;
 import com.me.tft_02.duel.util.player.DuelManager;
 import com.me.tft_02.duel.util.player.UserManager;
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.*;
+import org.bukkit.inventory.ItemStack;
 
-public class PlayerListener implements Listener {
+import java.util.ArrayList;
+import java.util.List;
+
+public class PlayerListener implements Listener
+{
 
     /**
      * Monitor PlayerInteractEntityEvent events.
@@ -39,33 +34,39 @@ public class PlayerListener implements Listener {
      * @param event The event to watch
      */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onPlayerInteract(PlayerInteractEntityEvent event) {
-        if (Config.getInstance().getChallengeInteractType() != InteractType.RIGHT_CLICK) {
+    public void onPlayerInteract( PlayerInteractEntityEvent event )
+    {
+        if( Config.getInstance().getChallengeInteractType() != InteractType.RIGHT_CLICK )
+        {
             return;
         }
 
         Player player = event.getPlayer();
         Entity entity = event.getRightClicked();
 
-        if (Misc.isNPCEntity(player) || Misc.isNPCEntity(entity)) {
+        if( Misc.isNPCEntity( player ) || Misc.isNPCEntity( entity ) )
+        {
             return;
         }
 
-        if (entity instanceof Player) {
-            Player target = (Player) entity;
+        if( entity instanceof Player )
+        {
+            Player target = ( Player ) entity;
 
-            if (!DuelManager.canDuel(player) || !DuelManager.canDuel(target, false)) {
+            if( !DuelManager.canDuel( player ) || !DuelManager.canDuel( target, false ) )
+            {
                 return;
             }
 
-            if (UserManager.getPlayer(target).getOccupied()) {
-                player.sendMessage(LocaleLoader.getString("Duel.Challenge.Occupied", target.getName()));
+            if( UserManager.getPlayer( target ).getOccupied() )
+            {
+                player.sendMessage( LocaleLoader.getString( "Duel.Challenge.Occupied", target.getName() ) );
                 return;
             }
 
-            event.setCancelled(true);
+            event.setCancelled( true );
 
-            DuelManager.handleDuelInvites(player, target);
+            DuelManager.handleDuelInvites( player, target );
         }
     }
 
@@ -75,20 +76,17 @@ public class PlayerListener implements Listener {
      * @param event The event to watch
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    private void onPlayerJoin(PlayerJoinEvent event) {
+    private void onPlayerJoin( PlayerJoinEvent event )
+    {
         Player player = event.getPlayer();
 
-        if (Misc.isNPCEntity(player)) {
+        if( Misc.isNPCEntity( player ) )
+        {
             return;
         }
 
-        DuelPlayer duelPlayer = UserManager.addUser(player);
-        duelPlayer.setOccupied(false);
-
-        if (Permissions.updateNotifications(player) && Duel.p.updateAvailable) {
-            player.sendMessage(LocaleLoader.getString("UpdateChecker.Outdated"));
-            player.sendMessage(LocaleLoader.getString("UpdateChecker.New_Available"));
-        }
+        DuelPlayer duelPlayer = UserManager.addUser( player );
+        duelPlayer.setOccupied( false );
     }
 
     /**
@@ -97,22 +95,26 @@ public class PlayerListener implements Listener {
      * @param event The event to check
      */
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onPlayerTeleport(PlayerTeleportEvent event) {
+    public void onPlayerTeleport( PlayerTeleportEvent event )
+    {
         Player player = event.getPlayer();
 
-        if (Misc.isNPCEntity(player)) {
+        if( Misc.isNPCEntity( player ) )
+        {
             return;
         }
 
-        if (!PlayerData.isInDuel(player)) {
+        if( !PlayerData.isInDuel( player ) )
+        {
             return;
         }
 
         Location targetLocation = event.getTo();
-        Location arenaCenter = ArenaManager.getArenaLocation(player);
+        Location arenaCenter = ArenaManager.getArenaLocation( player );
 
-        if (!Misc.isNear(targetLocation, arenaCenter, Config.getInstance().getArenaSize())) {
-            event.setCancelled(true);
+        if( !Misc.isNear( targetLocation, arenaCenter, Config.getInstance().getArenaSize() ) )
+        {
+            event.setCancelled( true );
         }
     }
 
@@ -122,21 +124,25 @@ public class PlayerListener implements Listener {
      * @param event The event to check
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onPlayerQuit(PlayerQuitEvent event) {
+    public void onPlayerQuit( PlayerQuitEvent event )
+    {
         Player player = event.getPlayer();
 
-        if (Misc.isNPCEntity(player)) {
+        if( Misc.isNPCEntity( player ) )
+        {
             return;
         }
 
-        if (PlayerData.isInDuel(player)) {
-            Player target = PlayerData.getDuelTarget(player);
+        if( PlayerData.isInDuel( player ) )
+        {
+            Player target = PlayerData.getDuelTarget( player );
 
-            DuelManager.endDuelResult(target, player);
+            DuelManager.endDuelResult( target, player );
         }
 
-        if (UserManager.getPlayer(player).getDuelRespawn()) {
-            ArenaManager.deleteArena(player);
+        if( UserManager.getPlayer( player ).getDuelRespawn() )
+        {
+            ArenaManager.deleteArena( player );
         }
     }
 
@@ -146,42 +152,49 @@ public class PlayerListener implements Listener {
      * @param event The event to check
      */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    private void onPlayerRespawn(PlayerRespawnEvent event) {
-        if (!Config.getInstance().getCallDeathEvents()) {
+    private void onPlayerRespawn( PlayerRespawnEvent event )
+    {
+        if( !Config.getInstance().getCallDeathEvents() )
+        {
             return;
         }
 
         Player player = event.getPlayer();
 
-        if (Misc.isNPCEntity(player)) {
+        if( Misc.isNPCEntity( player ) )
+        {
             return;
         }
 
-        Location arenaCenter = ArenaManager.getArenaLocation(player);
+        Location arenaCenter = ArenaManager.getArenaLocation( player );
 
-        DuelPlayer duelPlayer = UserManager.getPlayer(player);
+        DuelPlayer duelPlayer = UserManager.getPlayer( player );
 
-        if (!duelPlayer.getDuelRespawn() || arenaCenter == null) {
+        if( !duelPlayer.getDuelRespawn() || arenaCenter == null )
+        {
             return;
         }
 
-        event.setRespawnLocation(arenaCenter);
-        duelPlayer.setDuelRespawn(false);
-        ArenaManager.deleteArena(player);
+        event.setRespawnLocation( arenaCenter );
+        duelPlayer.setDuelRespawn( false );
+        ArenaManager.deleteArena( player );
 
-        if (Config.getInstance().getSaveInventory()) {
-            List<ItemStack> armorList = PlayerData.retrieveArmor(duelPlayer);
-            ItemStack[] armor = armorList.toArray(new ItemStack[armorList.size()]);
-            player.getInventory().setArmorContents(armor);
+        if( Config.getInstance().getSaveInventory() )
+        {
+            List<ItemStack> armorList = PlayerData.retrieveArmor( duelPlayer );
+            ItemStack[] armor = armorList.toArray( new ItemStack[armorList.size()] );
+            player.getInventory().setArmorContents( armor );
 
             List<ItemStack> items = new ArrayList<ItemStack>();
-            items = PlayerData.retrieveInventory(duelPlayer);
-            if (items != null) {
-                for (ItemStack item : items) {
-                    player.getInventory().addItem(item);
+            items = PlayerData.retrieveInventory( duelPlayer );
+            if( items != null )
+            {
+                for( ItemStack item : items )
+                {
+                    player.getInventory().addItem( item );
                 }
             }
-            new RetrieveLevelsTask(duelPlayer).runTaskLater(Duel.p, 1);
+            new RetrieveLevelsTask( duelPlayer ).runTaskLater( Duel.p, 1 );
 
             player.updateInventory();
         }
@@ -193,61 +206,73 @@ public class PlayerListener implements Listener {
      * @param event The event to check
      */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onPlayerDeathEvent(PlayerDeathEvent event) {
-        if (!Config.getInstance().getCallDeathEvents()) {
+    public void onPlayerDeathEvent( PlayerDeathEvent event )
+    {
+        if( !Config.getInstance().getCallDeathEvents() )
+        {
             return;
         }
 
         Player player = event.getEntity();
 
-        if (Misc.isNPCEntity(player)) {
+        if( Misc.isNPCEntity( player ) )
+        {
             return;
         }
 
-        if (!PlayerData.isInDuel(player)) {
+        if( !PlayerData.isInDuel( player ) )
+        {
             return;
         }
 
-        DuelPlayer duelPlayer = UserManager.getPlayer(player);
-        duelPlayer.setDuelRespawn(true);
+        DuelPlayer duelPlayer = UserManager.getPlayer( player );
+        duelPlayer.setDuelRespawn( true );
 
-        if (Config.getInstance().getSaveInventory()) {
+        if( Config.getInstance().getSaveInventory() )
+        {
             List<ItemStack> armorItems = new ArrayList<ItemStack>();
-            for (ItemStack armor : player.getInventory().getArmorContents()) {
-                if (armor != null) {
-                    armorItems.add(armor);
+            for( ItemStack armor : player.getInventory().getArmorContents() )
+            {
+                if( armor != null )
+                {
+                    armorItems.add( armor );
                 }
             }
 
             List<ItemStack> items = new ArrayList<ItemStack>();
-            for (ItemStack item : player.getInventory().getContents()) {
-                if (item != null) {
-                    items.add(item);
+            for( ItemStack item : player.getInventory().getContents() )
+            {
+                if( item != null )
+                {
+                    items.add( item );
                 }
             }
 
-            PlayerData.storeArmor(duelPlayer, armorItems);
-            PlayerData.storeInventory(duelPlayer, items);
-            PlayerData.storeLevelsAndExp(duelPlayer);
+            PlayerData.storeArmor( duelPlayer, armorItems );
+            PlayerData.storeInventory( duelPlayer, items );
+            PlayerData.storeLevelsAndExp( duelPlayer );
 
             event.getDrops().clear();
-            event.setDroppedExp(0);
+            event.setDroppedExp( 0 );
         }
 
-        DuelManager.endDuelResult(PlayerData.getDuelTarget(player), player);
+        DuelManager.endDuelResult( PlayerData.getDuelTarget( player ), player );
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onPlayerCommand(PlayerCommandPreprocessEvent event) {
+    public void onPlayerCommand( PlayerCommandPreprocessEvent event )
+    {
         Player player = event.getPlayer();
 
-        if (!PlayerData.isInDuel(player)) {
+        if( !PlayerData.isInDuel( player ) )
+        {
             return;
         }
 
-        if (Config.getInstance().getBlockedCommands().contains(event.getMessage())) {
-            player.sendMessage(LocaleLoader.getString("Duel.Command.Blocked", event.getMessage()));
-            event.setCancelled(true);
+        if( Config.getInstance().getBlockedCommands().contains( event.getMessage() ) )
+        {
+            player.sendMessage( LocaleLoader.getString( "Duel.Command.Blocked", event.getMessage() ) );
+            event.setCancelled( true );
         }
     }
 }

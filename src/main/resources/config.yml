@@ -1,12 +1,8 @@
 General:
-    Locale: en_US
+    Locale: en_Loy
 
     # Amount of time (in minutes) to wait between saves of player information
     Save_Interval: 10
-
-    # Allow Duel to check if a new version is available
-    Update_Check: true
-    Prefer_Beta: false
 
     # Should Duel print out debug messages?
     Verbose_Logging: false
@@ -16,7 +12,7 @@ General:
 
 Duel:
     # Should Duel prevent player versus player combat outside duels?
-    Prevent_PVP: false
+    Prevent_PVP: true
 
     # Override PVP prevention from other plugins?
     Override_PVP: true
@@ -54,7 +50,7 @@ Challenge:
     Enable_Challenge_Commands: false
 
     # Should it be possible to challenge players to a duel by interacting? (RIGHT_CLICK, LEFT_CLICK, OFF)
-    Challenge_Interact: RIGHT_CLICK
+    Challenge_Interact: LEFT_CLICK
 
     # Do players have to hold shift while interacting?
     Challenge_Hold_Shift: true

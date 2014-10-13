@@ -1,17 +1,17 @@
 package com.me.tft_02.duel.datatypes.player;
 
-import java.util.List;
-
+import com.me.tft_02.duel.datatypes.DuelInvitationKey;
+import com.me.tft_02.duel.datatypes.LevelAndExpKey;
+import com.me.tft_02.duel.util.Misc;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
-import com.me.tft_02.duel.datatypes.DuelInvitationKey;
-import com.me.tft_02.duel.datatypes.LevelAndExpKey;
-import com.me.tft_02.duel.util.Misc;
+import java.util.List;
 
-public class DuelPlayer {
+public class DuelPlayer
+{
     private Player player;
 
     private Location arena;
@@ -26,113 +26,140 @@ public class DuelPlayer {
     private LevelAndExpKey savedLevel;
     private boolean duelRespawn;
 
-    public DuelPlayer(Player player) {
+    public DuelPlayer( Player player )
+    {
         this.player = player;
     }
 
-    public Player getPlayer() {
+    public Player getPlayer()
+    {
         return player;
     }
 
-    public void setPlayer(Player player) {
+    public void setPlayer( Player player )
+    {
         this.player = player;
     }
 
-    public String getTargetName() {
+    public String getTargetName()
+    {
         return targetName;
     }
 
-    public void setTargetName(String targetName) {
+    public void setTargetName( String targetName )
+    {
         this.targetName = targetName;
     }
 
     // Occupied
-    public boolean getOccupied() {
+    public boolean getOccupied()
+    {
         return occupied;
     }
 
-    public void setOccupied(boolean isOccupied) {
+    public void setOccupied( boolean isOccupied )
+    {
         this.occupied = isOccupied;
     }
 
     // Respawn
-    public boolean getDuelRespawn() {
+    public boolean getDuelRespawn()
+    {
         return duelRespawn;
     }
 
-    public void setDuelRespawn(boolean modifyNextRespawn) {
+    public void setDuelRespawn( boolean modifyNextRespawn )
+    {
         this.duelRespawn = modifyNextRespawn;
     }
 
-    public DuelInvitationKey getDuelInvite() {
+    public DuelInvitationKey getDuelInvite()
+    {
         return duelInvitationKey;
     }
 
-    public void setDuelInvitationKey(DuelInvitationKey duelInvitationKey) {
+    public void setDuelInvitationKey( DuelInvitationKey duelInvitationKey )
+    {
         this.duelInvitationKey = duelInvitationKey;
     }
 
-    public BukkitTask getDuelEndTask() {
+    public BukkitTask getDuelEndTask()
+    {
         return duelEndTask;
     }
 
-    public void setDuelEndTask(BukkitTask duelEndTask) {
+    public void setDuelEndTask( BukkitTask duelEndTask )
+    {
         this.duelEndTask = duelEndTask;
     }
 
-    public List<ItemStack> getSavedInventoryItems() {
+    public List<ItemStack> getSavedInventoryItems()
+    {
         return savedInventoryItems;
     }
 
-    public void setSavedInventoryItems(List<ItemStack> savedInventoryItems) {
+    public void setSavedInventoryItems( List<ItemStack> savedInventoryItems )
+    {
         this.savedInventoryItems = savedInventoryItems;
     }
 
-    public List<ItemStack> getSavedInventoryArmor() {
+    public List<ItemStack> getSavedInventoryArmor()
+    {
         return savedInventoryArmor;
     }
 
-    public void setSavedInventoryArmor(List<ItemStack> savedInventoryArmor) {
+    public void setSavedInventoryArmor( List<ItemStack> savedInventoryArmor )
+    {
         this.savedInventoryArmor = savedInventoryArmor;
     }
 
-    public LevelAndExpKey getSavedLevel() {
+    public LevelAndExpKey getSavedLevel()
+    {
         return savedLevel;
     }
 
-    public void setSavedLevel(LevelAndExpKey savedLevel) {
+    public void setSavedLevel( LevelAndExpKey savedLevel )
+    {
         this.savedLevel = savedLevel;
     }
 
-    public Location getArena() {
+    public Location getArena()
+    {
         return arena;
     }
 
-    public void setArena(Location arena) {
+    public void setArena( Location arena )
+    {
         this.arena = arena;
     }
 
-    public int getLastChallengeSend() {
+    public int getLastChallengeSend()
+    {
         return lastChallengeSend;
     }
 
-    public void setLastChallengeSend(int lastChallengeSend) {
+    public void setLastChallengeSend( int lastChallengeSend )
+    {
         this.lastChallengeSend = lastChallengeSend;
     }
 
-    public void actualizeLastChallengeSend() {
-        setLastChallengeSend(Misc.getSystemTime());
+    public void actualizeLastChallengeSend()
+    {
+        setLastChallengeSend( Misc.getSystemTime() );
     }
 
-    public int getLastChallengeReceived() {
+    public int getLastChallengeReceived()
+    {
         return lastChallengeReceived;
     }
 
-    public void setLastChallengeReceived(int lastChallengeReceived) {
+    public void setLastChallengeReceived( int lastChallengeReceived )
+    {
         this.lastChallengeReceived = lastChallengeReceived;
     }
 
-    public void actualizeLastChallengeReceived() {
-        setLastChallengeReceived(Misc.getSystemTime());
+    public void actualizeLastChallengeReceived()
+    {
+        setLastChallengeReceived( Misc.getSystemTime() );
     }
 }

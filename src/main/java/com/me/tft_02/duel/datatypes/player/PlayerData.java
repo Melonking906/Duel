@@ -1,11 +1,5 @@
 package com.me.tft_02.duel.datatypes.player;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
 import com.me.tft_02.duel.Duel;
 import com.me.tft_02.duel.config.Config;
 import com.me.tft_02.duel.datatypes.DuelInvitationKey;
@@ -15,83 +9,106 @@ import com.me.tft_02.duel.locale.LocaleLoader;
 import com.me.tft_02.duel.util.CommandUtils;
 import com.me.tft_02.duel.util.Misc;
 import com.me.tft_02.duel.util.player.UserManager;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
-public class PlayerData {
+import java.util.ArrayList;
+import java.util.List;
 
-    public void setDuel(Player player, Player target) {
-        UserManager.getPlayer(player).setTargetName(target.getName());
-        UserManager.getPlayer(target).setTargetName(player.getName());
+public class PlayerData
+{
+
+    public void setDuel( Player player, Player target )
+    {
+        UserManager.getPlayer( player ).setTargetName( target.getName() );
+        UserManager.getPlayer( target ).setTargetName( player.getName() );
     }
 
-    public static Player getDuelTarget(Player player) {
-        String targetName = UserManager.getPlayer(player).getTargetName();
+    public static Player getDuelTarget( Player player )
+    {
+        String targetName = UserManager.getPlayer( player ).getTargetName();
 
-        if (targetName != null) {
-            return Duel.p.getServer().getPlayer(targetName);
+        if( targetName != null )
+        {
+            return Duel.p.getServer().getPlayer( targetName );
         }
 
         return null;
     }
 
-    public static boolean removeDuelTarget(Player player) {
-        DuelPlayer duelPlayer = UserManager.getPlayer(player);
+    public static boolean removeDuelTarget( Player player )
+    {
+        DuelPlayer duelPlayer = UserManager.getPlayer( player );
 
-        if (duelPlayer.getTargetName() != null) {
-            duelPlayer.setTargetName(null);
+        if( duelPlayer.getTargetName() != null )
+        {
+            duelPlayer.setTargetName( null );
             return true;
         }
         return false;
     }
 
-    public static boolean isInDuel(Player player) {
-        if (UserManager.getPlayer(player).getTargetName() == null) {
+    public static boolean isInDuel( Player player )
+    {
+        if( UserManager.getPlayer( player ).getTargetName() == null )
+        {
             return false;
         }
         return true;
     }
 
-    public static boolean areDueling(Player player, Player target) {
-        if (player == null || target == null) {
+    public static boolean areDueling( Player player, Player target )
+    {
+        if( player == null || target == null )
+        {
             return false;
         }
 
-        DuelPlayer duelPlayer = UserManager.getPlayer(player);
-        DuelPlayer duelTarget = UserManager.getPlayer(target);
+        DuelPlayer duelPlayer = UserManager.getPlayer( player );
+        DuelPlayer duelTarget = UserManager.getPlayer( target );
 
         String playerTargetName = duelPlayer.getTargetName();
         String targetTargetName = duelTarget.getTargetName();
 
-        if (playerTargetName == null || targetTargetName == null) {
+        if( playerTargetName == null || targetTargetName == null )
+        {
             return false;
         }
 
-        if (playerTargetName.equals(target.getName()) && targetTargetName.equals(player.getName())) {
+        if( playerTargetName.equals( target.getName() ) && targetTargetName.equals( player.getName() ) )
+        {
             return true;
         }
 
         return false;
     }
 
-    public String getDuelInvite(DuelPlayer duelPlayer) {
-        if (duelPlayer.getDuelInvite() != null) {
+    public String getDuelInvite( DuelPlayer duelPlayer )
+    {
+        if( duelPlayer.getDuelInvite() != null )
+        {
             return duelPlayer.getDuelInvite().getPlayerName();
         }
-        else {
+        else
+        {
             return null;
         }
     }
 
-    public boolean duelInviteIsTimedout(DuelPlayer duelPlayer) {
+    public boolean duelInviteIsTimedout( DuelPlayer duelPlayer )
+    {
         DuelInvitationKey key = duelPlayer.getDuelInvite();
-        if (key.getTimestamp() + Config.getInstance().getInviteTimeout() >= Misc.getSystemTime()) {
+        if( key.getTimestamp() + Config.getInstance().getInviteTimeout() >= Misc.getSystemTime() )
+        {
             return false;
         }
 
         return true;
     }
 
-    public void removeDuelInvite(DuelPlayer duelPlayer) {
-        duelPlayer.setDuelInvitationKey(null);
+    public void removeDuelInvite( DuelPlayer duelPlayer )
+    {
+        duelPlayer.setDuelInvitationKey( null );
     }
 
     /**
@@ -100,89 +117,106 @@ public class PlayerData {
      * @param duelPlayer the {@link DuelPlayer} object of the challenger
      * @param duelTarget the {@link DuelPlayer} object of the challenged player
      */
-    public void challenge(DuelPlayer duelPlayer, DuelPlayer duelTarget) {
+    public void challenge( DuelPlayer duelPlayer, DuelPlayer duelTarget )
+    {
         Player player = duelPlayer.getPlayer();
         String name = player.getName();
 
         duelPlayer.actualizeLastChallengeSend();
 
-        if (!Misc.cooldownExpired(duelTarget.getLastChallengeReceived(), 3)) {
+        if( !Misc.cooldownExpired( duelTarget.getLastChallengeReceived(), 3 ) )
+        {
             return;
         }
 
         Player target = duelTarget.getPlayer();
 
-        if (hasBeenChallenged(duelTarget, name) && !duelInviteIsTimedout(duelTarget)) {
-            player.sendMessage(LocaleLoader.getString("Duel.Challenge.Already_Send", target.getName()));
+        if( hasBeenChallenged( duelTarget, name ) && !duelInviteIsTimedout( duelTarget ) )
+        {
+            player.sendMessage( LocaleLoader.getString( "Duel.Challenge.Already_Send", target.getName() ) );
             return;
         }
 
         duelTarget.actualizeLastChallengeReceived();
-        player.sendMessage(LocaleLoader.getString("Duel.Challenge.Send", target.getName()));
-        duelTarget.setDuelInvitationKey(new DuelInvitationKey(name));
+        player.sendMessage( LocaleLoader.getString( "Duel.Challenge.Send", target.getName() ) );
+        duelTarget.setDuelInvitationKey( new DuelInvitationKey( name ) );
 
-        target.sendMessage(LocaleLoader.getString("Duel.Challenge.Receive.1", name));
+        target.sendMessage( LocaleLoader.getString( "Duel.Challenge.Receive.1", name ) );
 
-        if (Config.getInstance().getChallengeInteractType() != InteractType.OFF) {
-            target.sendMessage(LocaleLoader.getString("Duel.Challenge.Receive.2", CommandUtils.getControls(true), name));
+        if( Config.getInstance().getChallengeInteractType() != InteractType.OFF )
+        {
+            target.sendMessage( LocaleLoader.getString( "Duel.Challenge.Receive.2", CommandUtils.getControls( true ), name ) );
         }
-        else if (Config.getInstance().getChallengeCommandsEnabled()) {
-            target.sendMessage(LocaleLoader.getString("Duel.Challenge.Receive.3", name));
+        else if( Config.getInstance().getChallengeCommandsEnabled() )
+        {
+            target.sendMessage( LocaleLoader.getString( "Duel.Challenge.Receive.3", name ) );
         }
     }
 
-    private boolean hasBeenChallenged(DuelPlayer duelTarget, String name) {
-        return getDuelInvite(duelTarget) != null && getDuelInvite(duelTarget).equals(name);
+    private boolean hasBeenChallenged( DuelPlayer duelTarget, String name )
+    {
+        return getDuelInvite( duelTarget ) != null && getDuelInvite( duelTarget ).equals( name );
     }
 
-    public void removeDuelInvitation(DuelPlayer duelPlayer) {
-        duelPlayer.setDuelInvitationKey(null);
+    public void removeDuelInvitation( DuelPlayer duelPlayer )
+    {
+        duelPlayer.setDuelInvitationKey( null );
     }
 
-    public static List<Player> getDuelingPlayers() {
+    public static List<Player> getDuelingPlayers()
+    {
         Iterable<DuelPlayer> duelPlayers = UserManager.getPlayers();
         List<Player> duelingPlayers = new ArrayList<Player>();
 
-        for (DuelPlayer duelPlayer : duelPlayers) {
-            if (duelPlayer.getTargetName() != null) {
-                duelingPlayers.add(duelPlayer.getPlayer());
+        for( DuelPlayer duelPlayer : duelPlayers )
+        {
+            if( duelPlayer.getTargetName() != null )
+            {
+                duelingPlayers.add( duelPlayer.getPlayer() );
             }
         }
         return duelingPlayers;
     }
 
-    public static void storeInventory(DuelPlayer duelPlayer, List<ItemStack> items) {
-        duelPlayer.setSavedInventoryItems(items);
+    public static void storeInventory( DuelPlayer duelPlayer, List<ItemStack> items )
+    {
+        duelPlayer.setSavedInventoryItems( items );
     }
 
-    public static List<ItemStack> retrieveInventory(DuelPlayer duelPlayer) {
+    public static List<ItemStack> retrieveInventory( DuelPlayer duelPlayer )
+    {
         return duelPlayer.getSavedInventoryItems();
     }
 
-    public static void storeArmor(DuelPlayer duelPlayer, List<ItemStack> items) {
-        duelPlayer.setSavedInventoryArmor(items);
+    public static void storeArmor( DuelPlayer duelPlayer, List<ItemStack> items )
+    {
+        duelPlayer.setSavedInventoryArmor( items );
     }
 
-    public static List<ItemStack> retrieveArmor(DuelPlayer duelPlayer) {
+    public static List<ItemStack> retrieveArmor( DuelPlayer duelPlayer )
+    {
         return duelPlayer.getSavedInventoryArmor();
     }
 
-    public static void storeLevelsAndExp(DuelPlayer duelPlayer) {
+    public static void storeLevelsAndExp( DuelPlayer duelPlayer )
+    {
         Player player = duelPlayer.getPlayer();
-        duelPlayer.setSavedLevel(new LevelAndExpKey(player.getLevel(), player.getExp()));
+        duelPlayer.setSavedLevel( new LevelAndExpKey( player.getLevel(), player.getExp() ) );
     }
 
-    public static boolean retrieveLevelsAndExp(DuelPlayer duelPlayer) {
+    public static boolean retrieveLevelsAndExp( DuelPlayer duelPlayer )
+    {
         Player player = duelPlayer.getPlayer();
 
         LevelAndExpKey key = duelPlayer.getSavedLevel();
 
-        if (key == null) {
+        if( key == null )
+        {
             return false;
         }
 
-        player.setLevel(key.getLevel());
-        player.setExp(key.getExp());
+        player.setLevel( key.getLevel() );
+        player.setExp( key.getExp() );
         return true;
     }
 }
